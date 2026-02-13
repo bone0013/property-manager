@@ -1,0 +1,2340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Property Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f5f7fa;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+        }
+
+        h1 {
+            color: #1a202c;
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .setup-banner {
+            background: #fef3c7;
+            border: 2px solid #f59e0b;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+        }
+
+        .setup-banner h2 {
+            color: #92400e;
+            margin-bottom: 12px;
+        }
+
+        .setup-banner p {
+            color: #78350f;
+            margin-bottom: 8px;
+        }
+
+        .setup-banner input {
+            width: 100%;
+            max-width: 600px;
+            padding: 10px;
+            border: 1px solid #d97706;
+            border-radius: 6px;
+            margin-top: 8px;
+        }
+
+        .setup-banner button {
+            margin-top: 12px;
+        }
+
+        .header-stats {
+            display: flex;
+            gap: 32px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-label {
+            color: #718096;
+            font-size: 13px;
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            color: #1a202c;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            background: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+            color: #4a5568;
+            transition: all 0.2s;
+        }
+
+        .tab:hover {
+            background: #edf2f7;
+        }
+
+        .tab.active {
+            background: #3182ce;
+            color: white;
+        }
+
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .notifications {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+        }
+
+        .notification {
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border-left: 4px solid;
+        }
+
+        .notification:last-child {
+            margin-bottom: 0;
+        }
+
+        .notification.urgent {
+            background: #fff5f5;
+            border-color: #fc8181;
+        }
+
+        .notification.warning {
+            background: #fffaf0;
+            border-color: #f6ad55;
+        }
+
+        .notification.info {
+            background: #ebf8ff;
+            border-color: #63b3ed;
+        }
+
+        .notification-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #1a202c;
+        }
+
+        .notification-text {
+            color: #4a5568;
+            font-size: 14px;
+        }
+
+        .card {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1a202c;
+        }
+
+        .btn {
+            background: #3182ce;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background: #2c5282;
+        }
+
+        .btn:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #1a202c;
+        }
+
+        .btn-secondary:hover {
+            background: #cbd5e0;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            color: #4a5568;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #3182ce;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            padding: 12px;
+            background: #f7fafc;
+            color: #4a5568;
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #1a202c;
+        }
+
+        tr:hover {
+            background: #f7fafc;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .badge-success {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+
+        .badge-warning {
+            background: #feebc8;
+            color: #7c2d12;
+        }
+
+        .badge-danger {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+
+        .badge-info {
+            background: #bee3f8;
+            color: #2c5282;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: opacity 0.2s;
+        }
+
+        .action-btn:hover {
+            opacity: 0.8;
+        }
+
+        .action-btn.edit {
+            background: #3182ce;
+            color: white;
+        }
+
+        .action-btn.delete {
+            background: #e53e3e;
+            color: white;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 32px;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .modal-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: #1a202c;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #718096;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+        }
+
+        .close-btn:hover {
+            color: #1a202c;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 48px 24px;
+            color: #718096;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 48px;
+            color: #718096;
+        }
+
+        .loading::after {
+            content: '...';
+            animation: dots 1.5s steps(3, end) infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
+
+        .filter-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-bar select, .filter-bar input {
+            width: auto;
+            min-width: 150px;
+        }
+
+        .filter-bar input[type="text"] {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-stats {
+                gap: 16px;
+            }
+            
+            table {
+                font-size: 13px;
+            }
+            
+            th, td {
+                padding: 8px;
+            }
+
+            .tabs {
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Setup Banner -->
+        <div id="setupBanner" class="setup-banner" style="display: none;">
+            <h2>🔧 Setup Required</h2>
+            <p><strong>First time setup:</strong> Enter your Google Apps Script Web App URL below to connect to your Google Sheets database.</p>
+            <p>Don't have one yet? Check the setup instructions file included with this system.</p>
+            <input type="text" id="scriptUrlInput" placeholder="https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec">
+            <button class="btn" onclick="saveScriptUrl()">Save & Connect</button>
+        </div>
+
+        <header>
+            <h1>Property Management System</h1>
+            <div class="header-stats">
+                <div class="stat">
+                    <div class="stat-label">Total Units</div>
+                    <div class="stat-value" id="totalUnitsCount">-</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Active Reservations</div>
+                    <div class="stat-value" id="activeCount">-</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Available Units</div>
+                    <div class="stat-value" id="availableCount">-</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">This Month Revenue</div>
+                    <div class="stat-value" id="monthRevenue">$0</div>
+                </div>
+            </div>
+        </header>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('dashboard', event)">Dashboard</button>
+            <button class="tab" onclick="switchTab('reservations', event)">Reservations</button>
+            <button class="tab" onclick="switchTab('available', event)">Available Units</button>
+            <button class="tab" onclick="switchTab('units', event)">Manage Units</button>
+            <button class="tab" onclick="switchTab('properties', event)">Manage Properties</button>
+            <button class="tab" onclick="switchTab('reports', event)">Monthly Reports</button>
+        </div>
+
+        <!-- Dashboard -->
+        <div id="dashboard" class="content-section active">
+            <div class="notifications" id="notificationArea">
+                <div class="loading">Loading notifications</div>
+            </div>
+            
+            <div class="card" id="overdueCard" style="display: none; border-left: 4px solid #e53e3e;">
+                <div class="card-header">
+                    <div class="card-title" style="color: #c53030;">⚠️ Overdue Tenants</div>
+                </div>
+                <div id="overdueList"></div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Quick Actions</div>
+                </div>
+                <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                    <button class="btn" onclick="openAddReservationModal()">+ Add Reservation</button>
+                    <button class="btn btn-secondary" onclick="switchTab('reservations', event)">View All Reservations</button>
+                    <button class="btn btn-secondary" onclick="switchTab('reports', event)">Generate Report</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Upcoming Check-ins & Check-outs (Next 7 Days)</div>
+                </div>
+                <div id="upcomingList">
+                    <div class="loading">Loading upcoming events</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Available Units -->
+        <div id="available" class="content-section">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Available Units</div>
+                    <button class="btn" onclick="refreshData()">🔄 Refresh</button>
+                </div>
+                
+                <div class="filter-bar">
+                    <select id="availablePropertyFilter" onchange="displayAvailableUnits()">
+                        <option value="">All Properties</option>
+                        <option value="Hacienda Sievan">Hacienda Sievan</option>
+                        <option value="Sievan Place">Sievan Place</option>
+                        <option value="Beach House">Beach House</option>
+                        <option value="Duplex">Duplex</option>
+                    </select>
+                    
+                    <select id="availableTypeFilter" onchange="displayAvailableUnits()">
+                        <option value="">All Unit Types</option>
+                        <option value="Studio">Studio</option>
+                        <option value="1 Bedroom">1 Bedroom</option>
+                        <option value="2 Bedroom">2 Bedroom</option>
+                        <option value="3 Bedroom">3 Bedroom</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Property</th>
+                                <th>Unit Number</th>
+                                <th>Unit Type</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="availableUnitsBody">
+                            <tr><td colspan="4"><div class="loading">Loading available units</div></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Unit Management -->
+        <div id="units" class="content-section">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Manage Your Units</div>
+                    <button class="btn" onclick="openAddUnitModal()">+ Add New Unit</button>
+                </div>
+                
+                <div class="filter-bar">
+                    <select id="unitsPropertyFilter" onchange="displayAllUnits()">
+                        <option value="">All Properties</option>
+                        <option value="Hacienda Sievan">Hacienda Sievan</option>
+                        <option value="Sievan Place">Sievan Place</option>
+                        <option value="Beach House">Beach House</option>
+                        <option value="Duplex">Duplex</option>
+                    </select>
+                </div>
+                
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Property</th>
+                                <th>Unit Number</th>
+                                <th>Unit Type</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="allUnitsBody">
+                            <tr><td colspan="5"><div class="loading">Loading units</div></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Manage Properties -->
+        <div id="properties" class="content-section">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Manage Properties</div>
+                    <button class="btn" onclick="openAddPropertyModal()">+ Add New Property</button>
+                </div>
+                
+                <p style="color: #718096; margin-bottom: 20px;">
+                    Add, edit, or remove properties. All dropdowns throughout the system will update automatically.
+                </p>
+                
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Property Name</th>
+                                <th>Total Units</th>
+                                <th>Active Reservations</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="propertiesBody">
+                            <tr><td colspan="4"><div class="loading">Loading properties</div></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reservations -->
+        <div id="reservations" class="content-section">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">All Reservations</div>
+                    <button class="btn" onclick="openAddReservationModal()">+ Add Reservation</button>
+                </div>
+                
+                <div class="filter-bar">
+                    <input type="text" id="searchBox" placeholder="Search by tenant name, unit, or property..." 
+                           oninput="filterReservations()">
+                    
+                    <select id="propertyFilter" onchange="filterReservations()">
+                        <option value="">All Properties</option>
+                        <option value="Hacienda Sievan">Hacienda Sievan</option>
+                        <option value="Sievan Place">Sievan Place</option>
+                        <option value="Beach House">Beach House</option>
+                        <option value="Duplex">Duplex</option>
+                    </select>
+                    
+                    <select id="statusFilter" onchange="filterReservations()">
+                        <option value="">All Status</option>
+                        <option value="active">Active</option>
+                        <option value="upcoming">Upcoming</option>
+                        <option value="completed">Completed</option>
+                    </select>
+                    
+                    <select id="typeFilter" onchange="filterReservations()">
+                        <option value="">All Types</option>
+                        <option value="long-term">Long-term</option>
+                        <option value="short-term">Short-term</option>
+                    </select>
+                </div>
+                
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Property</th>
+                                <th>Unit</th>
+                                <th>Type</th>
+                                <th>Tenant</th>
+                                <th>Rental</th>
+                                <th>Check-in</th>
+                                <th>Check-out</th>
+                                <th>Monthly Rent</th>
+                                <th>Balance Due</th>
+                                <th>Status</th>
+                                <th>Overdue?</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reservationsBody">
+                            <tr><td colspan="11"><div class="loading">Loading reservations</div></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reports -->
+        <div id="reports" class="content-section">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Monthly Revenue Report</div>
+                </div>
+                
+                <div class="form-row" style="margin-bottom: 24px;">
+                    <select id="reportMonth">
+                        <option value="0">January</option>
+                        <option value="1">February</option>
+                        <option value="2">March</option>
+                        <option value="3">April</option>
+                        <option value="4">May</option>
+                        <option value="5">June</option>
+                        <option value="6">July</option>
+                        <option value="7">August</option>
+                        <option value="8">September</option>
+                        <option value="9">October</option>
+                        <option value="10">November</option>
+                        <option value="11">December</option>
+                    </select>
+                    
+                    <select id="reportYear"></select>
+                </div>
+                
+                <button class="btn" onclick="generateMonthReport()">Generate Report</button>
+                
+                <div id="reportContent" style="margin-top: 24px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reservation Modal -->
+    <div id="reservationModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title" id="modalTitle">Add New Reservation</div>
+                <button class="close-btn" onclick="closeReservationModal()">×</button>
+            </div>
+            
+            <form id="reservationForm" onsubmit="saveReservation(event)">
+                <input type="hidden" id="editingId">
+                
+                <div class="form-group">
+                    <label>Property *</label>
+                    <select id="property" required onchange="updateUnitOptions()">
+                        <option value="">Select Property</option>
+                        <option value="Hacienda Sievan">Hacienda Sievan (74 units)</option>
+                        <option value="Sievan Place">Sievan Place (11 units)</option>
+                        <option value="Beach House">Beach House (Airbnb)</option>
+                        <option value="Duplex">Duplex</option>
+                    </select>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Unit Number *</label>
+                        <select id="unitNumber" required>
+                            <option value="">Select property first</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Unit Type</label>
+                        <input type="text" id="unitType" readonly style="background: #f7fafc;">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Tenant Name *</label>
+                    <input type="text" id="tenantName" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Contact</label>
+                    <input type="text" id="tenantContact" placeholder="Phone or email">
+                </div>
+                
+                <div class="form-group">
+                    <label>Rental Type *</label>
+                    <select id="rentalType" required>
+                        <option value="long-term">Long-term (Monthly Rent)</option>
+                        <option value="short-term">Short-term (Daily/Weekly)</option>
+                    </select>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Check-in Date *</label>
+                        <input type="date" id="checkIn" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Check-out Date *</label>
+                        <input type="date" id="checkOut" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Monthly Rent Amount *</label>
+                        <input type="number" id="rentAmount" required min="0" step="0.01" placeholder="0.00">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Security Deposit</label>
+                        <input type="number" id="depositAmount" min="0" step="0.01" placeholder="0.00">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Notes</label>
+                    <textarea id="notes" rows="3" placeholder="Additional information..."></textarea>
+                </div>
+                
+                <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px;">
+                    <button type="button" class="btn btn-secondary" onclick="closeReservationModal()">Cancel</button>
+                    <button type="submit" class="btn" id="saveReservationBtn">Save Reservation</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Property Modal -->
+    <div id="propertyModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title" id="propertyModalTitle">Add New Property</div>
+                <button class="close-btn" onclick="closePropertyModal()">×</button>
+            </div>
+            
+            <form id="propertyForm" onsubmit="saveProperty(event)">
+                <input type="hidden" id="editingPropertyId">
+                <input type="hidden" id="originalPropertyName">
+                
+                <div class="form-group">
+                    <label>Property Name *</label>
+                    <input type="text" id="propertyName" required placeholder="e.g., New Development">
+                </div>
+                
+                <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px;">
+                    <button type="button" class="btn btn-secondary" onclick="closePropertyModal()">Cancel</button>
+                    <button type="submit" class="btn" id="savePropertyBtn">Save Property</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Unit Modal -->
+    <div id="unitModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title" id="unitModalTitle">Add New Unit</div>
+                <button class="close-btn" onclick="closeUnitModal()">×</button>
+            </div>
+            
+            <form id="unitForm" onsubmit="saveUnit(event)">
+                <input type="hidden" id="editingUnitId">
+                
+                <div class="form-group">
+                    <label>Property *</label>
+                    <select id="unitProperty" required>
+                        <option value="">Select Property</option>
+                        <option value="Hacienda Sievan">Hacienda Sievan</option>
+                        <option value="Sievan Place">Sievan Place</option>
+                        <option value="Beach House">Beach House</option>
+                        <option value="Duplex">Duplex</option>
+                    </select>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Unit Number *</label>
+                        <input type="text" id="unitNum" required placeholder="e.g., 101, A, B">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Unit Type *</label>
+                        <input type="text" id="unitTypeSelect" required placeholder="e.g., Studio, 1 Bedroom, 2 Bedroom" 
+                               list="unitTypeOptions">
+                        <datalist id="unitTypeOptions">
+                            <option value="Studio">
+                            <option value="1 Bedroom">
+                            <option value="2 Bedroom">
+                            <option value="3 Bedroom">
+                            <option value="Other">
+                        </datalist>
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px;">
+                    <button type="button" class="btn btn-secondary" onclick="closeUnitModal()">Cancel</button>
+                    <button type="submit" class="btn" id="saveUnitBtn">Save Unit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Ledger Modal -->
+    <div id="ledgerModal" class="modal">
+        <div class="modal-content" style="max-width: 900px;">
+            <div class="modal-header">
+                <div>
+                    <div class="modal-title">Payment Ledger</div>
+                    <div style="color: #718096; font-size: 14px; margin-top: 4px;" id="ledgerTenantInfo"></div>
+                </div>
+                <button class="close-btn" onclick="closeLedgerModal()">×</button>
+            </div>
+            
+            <input type="hidden" id="ledgerReservationId">
+            
+            <!-- Charges Section -->
+            <div style="margin-bottom: 32px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <h3 style="color: #1a202c; font-size: 18px;">Charges</h3>
+                    <button class="btn" onclick="addChargeLine()">+ Add Charge</button>
+                </div>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Description</th>
+                            <th>Amount Due</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="chargesTableBody">
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Payments Section -->
+            <div style="margin-bottom: 32px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <h3 style="color: #1a202c; font-size: 18px;">Payments Received</h3>
+                    <button class="btn" onclick="addPaymentLine()">+ Add Payment</button>
+                </div>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Description</th>
+                            <th>Amount Paid</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="paymentsTableBody">
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Balance Summary -->
+            <div style="background: #f7fafc; padding: 24px; border-radius: 8px; border-left: 4px solid #3182ce;">
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;">
+                    <div>
+                        <div style="color: #718096; font-size: 13px; margin-bottom: 4px;">Total Charges</div>
+                        <div style="color: #1a202c; font-size: 24px; font-weight: 600;" id="totalCharges">$0.00</div>
+                    </div>
+                    <div>
+                        <div style="color: #718096; font-size: 13px; margin-bottom: 4px;">Total Paid</div>
+                        <div style="color: #1a202c; font-size: 24px; font-weight: 600;" id="totalPaid">$0.00</div>
+                    </div>
+                    <div>
+                        <div style="color: #718096; font-size: 13px; margin-bottom: 4px;">Balance Due</div>
+                        <div style="font-size: 24px; font-weight: 600;" id="balanceDue">$0.00</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px;">
+                <button type="button" class="btn" onclick="closeLedgerModal()">Done</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global state
+        let SCRIPT_URL = localStorage.getItem('scriptUrl') || '';
+        let reservations = [];
+        let units = [];
+        let ledgerData = {};
+        let properties = [];
+
+        // Check if setup is needed
+        if (!SCRIPT_URL) {
+            document.getElementById('setupBanner').style.display = 'block';
+        } else {
+            initializeApp();
+        }
+
+        function saveScriptUrl() {
+            const url = document.getElementById('scriptUrlInput').value.trim();
+            if (!url) {
+                alert('Please enter a valid URL');
+                return;
+            }
+            
+            localStorage.setItem('scriptUrl', url);
+            SCRIPT_URL = url;
+            document.getElementById('setupBanner').style.display = 'none';
+            initializeApp();
+        }
+
+        async function initializeApp() {
+            await loadData();
+            displayReservations();
+            updateDashboard();
+            updateStats();
+        }
+
+        // API calls to Google Sheets
+        async function loadData() {
+            try {
+                const response = await fetch(`${SCRIPT_URL}?action=loadData`);
+                const data = await response.json();
+                
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                
+                reservations = data.reservations || [];
+                units = data.units || [];
+                ledgerData = data.ledger || {};
+                properties = data.properties || getDefaultProperties();
+                
+                // Parse ledger data back into reservations
+                reservations.forEach(r => {
+                    const ledgerKey = `${r.id}`;
+                    if (ledgerData[ledgerKey]) {
+                        r.charges = ledgerData[ledgerKey].charges || [];
+                        r.payments = ledgerData[ledgerKey].payments || [];
+                    } else {
+                        r.charges = [];
+                        r.payments = [];
+                    }
+                });
+                
+                // Update all property dropdowns
+                updatePropertyDropdowns();
+                
+            } catch (error) {
+                console.error('Error loading data:', error);
+                alert('Failed to load data from Google Sheets. Please check your Script URL and try again.');
+            }
+        }
+        
+        function getDefaultProperties() {
+            return [
+                { id: 1, name: 'Hacienda Sievan' },
+                { id: 2, name: 'Sievan Place' },
+                { id: 3, name: 'Beach House' },
+                { id: 4, name: 'Duplex' }
+            ];
+        }
+
+        async function saveToSheets(action, data) {
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ action, data })
+                });
+                
+                // Note: With no-cors mode, we can't read the response
+                // We'll reload data after a short delay
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                await loadData();
+                
+                return true;
+            } catch (error) {
+                console.error('Error saving to sheets:', error);
+                alert('Failed to save data. Please try again.');
+                return false;
+            }
+        }
+
+        async function refreshData() {
+            await loadData();
+            displayReservations();
+            displayAvailableUnits();
+            displayAllUnits();
+            updateDashboard();
+            updateStats();
+        }
+
+        // Initialize year dropdown
+        const currentYear = new Date().getFullYear();
+        const yearSelect = document.getElementById('reportYear');
+        for (let year = currentYear - 2; year <= currentYear + 1; year++) {
+            const option = document.createElement('option');
+            option.value = year;
+            option.textContent = year;
+            if (year === currentYear) option.selected = true;
+            yearSelect.appendChild(option);
+        }
+        document.getElementById('reportMonth').value = new Date().getMonth();
+
+        // Tab switching
+        function switchTab(tabName, event) {
+            if (event) {
+                document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+                document.querySelectorAll('.content-section').forEach(section => section.classList.remove('active'));
+                
+                event.target.classList.add('active');
+                document.getElementById(tabName).classList.add('active');
+            }
+            
+            if (tabName === 'dashboard') {
+                updateDashboard();
+            } else if (tabName === 'reservations') {
+                displayReservations();
+            } else if (tabName === 'available') {
+                displayAvailableUnits();
+            } else if (tabName === 'units') {
+                displayAllUnits();
+            } else if (tabName === 'properties') {
+                displayProperties();
+            }
+        }
+
+        // Property Management Functions
+        function displayProperties() {
+            const tbody = document.getElementById('propertiesBody');
+            
+            if (properties.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="empty-state"><div class="empty-state-icon">🏢</div><div>No properties found</div></td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = properties.map(property => {
+                const propertyUnits = units.filter(u => u.property === property.name);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                
+                const activeReservations = reservations.filter(r => {
+                    if (r.property !== property.name) return false;
+                    const checkIn = new Date(r.checkIn);
+                    const checkOut = new Date(r.checkOut);
+                    return checkIn <= today && checkOut >= today;
+                });
+                
+                return `
+                    <tr>
+                        <td><strong>${property.name}</strong></td>
+                        <td>${propertyUnits.length} units</td>
+                        <td>${activeReservations.length} active</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="action-btn edit" onclick="openEditPropertyModal(${property.id})">Rename</button>
+                                <button class="action-btn delete" onclick="deleteProperty(${property.id})">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+        
+        function openAddPropertyModal() {
+            document.getElementById('propertyModalTitle').textContent = 'Add New Property';
+            document.getElementById('propertyForm').reset();
+            document.getElementById('editingPropertyId').value = '';
+            document.getElementById('originalPropertyName').value = '';
+            document.getElementById('propertyModal').classList.add('active');
+        }
+        
+        function openEditPropertyModal(propertyId) {
+            const property = properties.find(p => p.id === propertyId);
+            if (!property) return;
+            
+            document.getElementById('propertyModalTitle').textContent = 'Rename Property';
+            document.getElementById('editingPropertyId').value = propertyId;
+            document.getElementById('originalPropertyName').value = property.name;
+            document.getElementById('propertyName').value = property.name;
+            document.getElementById('propertyModal').classList.add('active');
+        }
+        
+        function closePropertyModal() {
+            document.getElementById('propertyModal').classList.remove('active');
+        }
+        
+        async function saveProperty(event) {
+            event.preventDefault();
+            
+            const btn = document.getElementById('savePropertyBtn');
+            btn.disabled = true;
+            btn.textContent = 'Saving...';
+            
+            const editingId = document.getElementById('editingPropertyId').value;
+            const newName = document.getElementById('propertyName').value.trim();
+            
+            // Check for duplicates
+            const duplicate = properties.find(p => 
+                p.name.toLowerCase() === newName.toLowerCase() && 
+                (!editingId || p.id !== parseInt(editingId))
+            );
+            
+            if (duplicate) {
+                alert('A property with this name already exists!');
+                btn.disabled = false;
+                btn.textContent = 'Save Property';
+                return;
+            }
+            
+            if (editingId) {
+                // Rename property
+                const propertyId = parseInt(editingId);
+                const property = properties.find(p => p.id === propertyId);
+                const oldName = property.name;
+                property.name = newName;
+                
+                // Update all units and reservations
+                units.forEach(u => {
+                    if (u.property === oldName) u.property = newName;
+                });
+                reservations.forEach(r => {
+                    if (r.property === oldName) r.property = newName;
+                });
+                
+                const success = await saveToSheets('renameProperty', {
+                    oldName, newName, units, reservations
+                });
+                
+                if (success) {
+                    closePropertyModal();
+                    displayProperties();
+                    updatePropertyDropdowns();
+                }
+            } else {
+                // Add new property
+                const newProperty = {
+                    id: Date.now(),
+                    name: newName
+                };
+                
+                properties.push(newProperty);
+                const success = await saveToSheets('addProperty', newProperty);
+                
+                if (success) {
+                    closePropertyModal();
+                    displayProperties();
+                    updatePropertyDropdowns();
+                }
+            }
+            
+            btn.disabled = false;
+            btn.textContent = 'Save Property';
+        }
+        
+        async function deleteProperty(propertyId) {
+            const property = properties.find(p => p.id === propertyId);
+            
+            const propertyUnits = units.filter(u => u.property === property.name);
+            if (propertyUnits.length > 0) {
+                alert(`Cannot delete "${property.name}" because it has ${propertyUnits.length} unit(s).`);
+                return;
+            }
+            
+            const propertyReservations = reservations.filter(r => r.property === property.name);
+            if (propertyReservations.length > 0) {
+                alert(`Cannot delete "${property.name}" because it has ${propertyReservations.length} reservation(s).`);
+                return;
+            }
+            
+            if (!confirm(`Delete property "${property.name}"?`)) return;
+            
+            properties = properties.filter(p => p.id !== propertyId);
+            await saveToSheets('deleteProperty', { id: propertyId });
+            displayProperties();
+            updatePropertyDropdowns();
+        }
+        
+        function updatePropertyDropdowns() {
+            const dropdowns = [
+                'property', 'propertyFilter', 'availablePropertyFilter',
+                'unitsPropertyFilter', 'unitProperty'
+            ];
+            
+            dropdowns.forEach(dropdownId => {
+                const dropdown = document.getElementById(dropdownId);
+                if (!dropdown) return;
+                
+                const currentValue = dropdown.value;
+                const isFilter = dropdownId.includes('Filter');
+                
+                dropdown.innerHTML = isFilter ? '<option value="">All Properties</option>' : '<option value="">Select Property</option>';
+                
+                properties.forEach(property => {
+                    const option = document.createElement('option');
+                    option.value = property.name;
+                    option.textContent = property.name;
+                    dropdown.appendChild(option);
+                });
+                
+                if (currentValue && properties.find(p => p.name === currentValue)) {
+                    dropdown.value = currentValue;
+                }
+            });
+        }
+
+        // Unit dropdown population
+        function updateUnitOptions() {
+            const property = document.getElementById('property').value;
+            const unitSelect = document.getElementById('unitNumber');
+            const unitTypeInput = document.getElementById('unitType');
+            
+            if (!property) {
+                unitSelect.innerHTML = '<option value="">Select property first</option>';
+                unitTypeInput.value = '';
+                return;
+            }
+            
+            const propertyUnits = units.filter(u => u.property === property);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            const occupiedUnits = new Set();
+            reservations.forEach(r => {
+                if (r.property === property) {
+                    const checkIn = new Date(r.checkIn);
+                    const checkOut = new Date(r.checkOut);
+                    if (checkIn <= today && checkOut >= today) {
+                        occupiedUnits.add(r.unitNumber);
+                    }
+                }
+            });
+            
+            unitSelect.innerHTML = '<option value="">Select unit</option>';
+            propertyUnits
+                .sort((a, b) => {
+                    const aNum = parseInt(a.unitNumber);
+                    const bNum = parseInt(b.unitNumber);
+                    if (!isNaN(aNum) && !isNaN(bNum)) return aNum - bNum;
+                    return a.unitNumber.localeCompare(b.unitNumber, undefined, { numeric: true });
+                })
+                .forEach(unit => {
+                    const option = document.createElement('option');
+                    option.value = unit.unitNumber;
+                    option.textContent = `Unit ${unit.unitNumber} - ${unit.unitType}${occupiedUnits.has(unit.unitNumber) ? ' (Occupied)' : ''}`;
+                    option.dataset.unitType = unit.unitType;
+                    unitSelect.appendChild(option);
+                });
+            
+            unitSelect.onchange = function() {
+                const selectedOption = this.options[this.selectedIndex];
+                unitTypeInput.value = selectedOption.dataset.unitType || '';
+            };
+        }
+
+        // Reservation Modal
+        function openAddReservationModal() {
+            document.getElementById('modalTitle').textContent = 'Add New Reservation';
+            document.getElementById('reservationForm').reset();
+            document.getElementById('editingId').value = '';
+            document.getElementById('property').value = '';
+            document.getElementById('unitNumber').innerHTML = '<option value="">Select property first</option>';
+            document.getElementById('unitType').value = '';
+            document.getElementById('reservationModal').classList.add('active');
+        }
+
+        function closeReservationModal() {
+            document.getElementById('reservationModal').classList.remove('active');
+        }
+
+        function openEditModal(id) {
+            const reservation = reservations.find(r => r.id === id);
+            if (!reservation) return;
+            
+            document.getElementById('modalTitle').textContent = 'Edit Reservation';
+            document.getElementById('editingId').value = id;
+            document.getElementById('property').value = reservation.property;
+            updateUnitOptions();
+            document.getElementById('unitNumber').value = reservation.unitNumber;
+            const selectedOption = document.getElementById('unitNumber').options[document.getElementById('unitNumber').selectedIndex];
+            document.getElementById('unitType').value = selectedOption?.dataset.unitType || reservation.unitType || '';
+            document.getElementById('tenantName').value = reservation.tenantName;
+            document.getElementById('tenantContact').value = reservation.tenantContact || '';
+            document.getElementById('rentalType').value = reservation.rentalType;
+            document.getElementById('checkIn').value = reservation.checkIn;
+            document.getElementById('checkOut').value = reservation.checkOut;
+            document.getElementById('rentAmount').value = reservation.rentAmount;
+            document.getElementById('depositAmount').value = reservation.depositAmount || '';
+            document.getElementById('notes').value = reservation.notes || '';
+            
+            document.getElementById('reservationModal').classList.add('active');
+        }
+
+        async function saveReservation(event) {
+            event.preventDefault();
+            
+            const btn = document.getElementById('saveReservationBtn');
+            btn.disabled = true;
+            btn.textContent = 'Saving...';
+            
+            const editingId = document.getElementById('editingId').value;
+            const reservation = {
+                id: editingId ? parseInt(editingId) : Date.now(),
+                property: document.getElementById('property').value,
+                unitNumber: document.getElementById('unitNumber').value,
+                unitType: document.getElementById('unitType').value,
+                tenantName: document.getElementById('tenantName').value,
+                tenantContact: document.getElementById('tenantContact').value,
+                rentalType: document.getElementById('rentalType').value,
+                checkIn: document.getElementById('checkIn').value,
+                checkOut: document.getElementById('checkOut').value,
+                rentAmount: parseFloat(document.getElementById('rentAmount').value),
+                depositAmount: parseFloat(document.getElementById('depositAmount').value) || 0,
+                notes: document.getElementById('notes').value,
+                createdAt: editingId ? reservations.find(r => r.id === parseInt(editingId))?.createdAt : new Date().toISOString(),
+                completedStatus: editingId ? reservations.find(r => r.id === parseInt(editingId))?.completedStatus || 'active' : 'active'
+            };
+            
+            const success = await saveToSheets(editingId ? 'updateReservation' : 'addReservation', reservation);
+            
+            if (success) {
+                closeReservationModal();
+                displayReservations();
+                updateDashboard();
+                updateStats();
+            }
+            
+            btn.disabled = false;
+            btn.textContent = 'Save Reservation';
+        }
+
+        async function deleteReservation(id) {
+            if (!confirm('Are you sure you want to delete this reservation?')) return;
+            
+            await saveToSheets('deleteReservation', { id });
+            displayReservations();
+            updateDashboard();
+            updateStats();
+        }
+        
+        async function markAsCompleted(id) {
+            const reservation = reservations.find(r => r.id === id);
+            if (!reservation) return;
+            
+            if (confirm(`Mark "${reservation.tenantName}" as moved out/completed?`)) {
+                reservation.completedStatus = 'completed';
+                await saveToSheets('updateReservation', reservation);
+                displayReservations();
+                updateDashboard();
+                updateStats();
+            }
+        }
+        
+        async function markAsActive(id) {
+            const reservation = reservations.find(r => r.id === id);
+            if (!reservation) return;
+            
+            if (confirm(`Reactivate this reservation?`)) {
+                reservation.completedStatus = 'active';
+                await saveToSheets('updateReservation', reservation);
+                displayReservations();
+                updateDashboard();
+                updateStats();
+            }
+        }
+
+        // Unit Management
+        function openAddUnitModal() {
+            document.getElementById('unitModalTitle').textContent = 'Add New Unit';
+            document.getElementById('unitForm').reset();
+            document.getElementById('editingUnitId').value = '';
+            document.getElementById('unitModal').classList.add('active');
+        }
+        
+        function openEditUnitModal(unitId) {
+            const unit = units.find(u => u.id === unitId);
+            if (!unit) return;
+            
+            document.getElementById('unitModalTitle').textContent = 'Edit Unit';
+            document.getElementById('editingUnitId').value = unitId;
+            document.getElementById('unitProperty').value = unit.property;
+            document.getElementById('unitNum').value = unit.unitNumber;
+            document.getElementById('unitTypeSelect').value = unit.unitType || '';
+            document.getElementById('unitModal').classList.add('active');
+        }
+
+        function closeUnitModal() {
+            document.getElementById('unitModal').classList.remove('active');
+        }
+
+        async function saveUnit(event) {
+            event.preventDefault();
+            
+            const btn = document.getElementById('saveUnitBtn');
+            btn.disabled = true;
+            btn.textContent = 'Saving...';
+            
+            const editingId = document.getElementById('editingUnitId').value;
+            const unit = {
+                id: editingId ? parseInt(editingId) : Date.now(),
+                property: document.getElementById('unitProperty').value,
+                unitNumber: document.getElementById('unitNum').value,
+                unitType: document.getElementById('unitTypeSelect').value
+            };
+            
+            // Check for duplicates
+            const duplicate = units.find(u => 
+                u.property === unit.property && 
+                u.unitNumber === unit.unitNumber && 
+                (!editingId || u.id !== unit.id)
+            );
+            
+            if (duplicate) {
+                alert('This unit number already exists for this property!');
+                btn.disabled = false;
+                btn.textContent = 'Save Unit';
+                return;
+            }
+            
+            const success = await saveToSheets(editingId ? 'updateUnit' : 'addUnit', unit);
+            
+            if (success) {
+                closeUnitModal();
+                displayAllUnits();
+                updateStats();
+            }
+            
+            btn.disabled = false;
+            btn.textContent = 'Save Unit';
+        }
+
+        async function deleteUnit(unitId) {
+            const unit = units.find(u => u.id === unitId);
+            
+            const hasReservations = reservations.some(r => 
+                r.property === unit.property && r.unitNumber === unit.unitNumber
+            );
+            
+            if (hasReservations) {
+                alert('Cannot delete this unit because it has existing reservations.');
+                return;
+            }
+            
+            if (!confirm(`Delete Unit ${unit.unitNumber} from ${unit.property}?`)) return;
+            
+            await saveToSheets('deleteUnit', { id: unitId });
+            displayAllUnits();
+            updateStats();
+        }
+
+        function displayAllUnits() {
+            const tbody = document.getElementById('allUnitsBody');
+            let filtered = [...units];
+            
+            const propertyFilter = document.getElementById('unitsPropertyFilter').value;
+            if (propertyFilter) {
+                filtered = filtered.filter(u => u.property === propertyFilter);
+            }
+            
+            filtered.sort((a, b) => {
+                if (a.property !== b.property) {
+                    return a.property.localeCompare(b.property);
+                }
+                const aNum = parseInt(a.unitNumber);
+                const bNum = parseInt(b.unitNumber);
+                if (!isNaN(aNum) && !isNaN(bNum)) return aNum - bNum;
+                return a.unitNumber.localeCompare(b.unitNumber, undefined, { numeric: true });
+            });
+            
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="empty-state"><div class="empty-state-icon">🏠</div><div>No units found</div></td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = filtered.map(unit => {
+                const isOccupied = reservations.some(r => {
+                    if (r.property !== unit.property || r.unitNumber !== unit.unitNumber) return false;
+                    const checkIn = new Date(r.checkIn);
+                    const checkOut = new Date(r.checkOut);
+                    return checkIn <= today && checkOut >= today;
+                });
+                
+                const statusBadge = isOccupied ? 'badge-warning' : 'badge-success';
+                const statusText = isOccupied ? 'Occupied' : 'Available';
+                
+                return `
+                    <tr>
+                        <td>${unit.property}</td>
+                        <td>${unit.unitNumber}</td>
+                        <td>${unit.unitType || '<em style="color: #718096;">Not set</em>'}</td>
+                        <td><span class="badge ${statusBadge}">${statusText}</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="action-btn edit" onclick="openEditUnitModal(${unit.id})">Edit</button>
+                                <button class="action-btn delete" onclick="deleteUnit(${unit.id})">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function displayAvailableUnits() {
+            const tbody = document.getElementById('availableUnitsBody');
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            const occupiedUnits = new Set();
+            reservations.forEach(r => {
+                // Skip completed reservations
+                if (r.completedStatus === 'completed') return;
+                
+                const checkIn = new Date(r.checkIn);
+                const checkOut = new Date(r.checkOut);
+                if (checkIn <= today && checkOut >= today) {
+                    occupiedUnits.add(`${r.property}|${r.unitNumber}`);
+                }
+            });
+            
+            let available = units.filter(unit => 
+                !occupiedUnits.has(`${unit.property}|${unit.unitNumber}`)
+            );
+            
+            const propertyFilter = document.getElementById('availablePropertyFilter').value;
+            const typeFilter = document.getElementById('availableTypeFilter').value;
+            
+            if (propertyFilter) {
+                available = available.filter(u => u.property === propertyFilter);
+            }
+            if (typeFilter) {
+                available = available.filter(u => u.unitType === typeFilter);
+            }
+            
+            available.sort((a, b) => {
+                if (a.property !== b.property) {
+                    return a.property.localeCompare(b.property);
+                }
+                const aNum = parseInt(a.unitNumber);
+                const bNum = parseInt(b.unitNumber);
+                if (!isNaN(aNum) && !isNaN(bNum)) return aNum - bNum;
+                return a.unitNumber.localeCompare(b.unitNumber, undefined, { numeric: true });
+            });
+            
+            if (available.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="empty-state"><div class="empty-state-icon">🏠</div><div>No available units found</div></td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = available.map(unit => `
+                <tr>
+                    <td>${unit.property}</td>
+                    <td>${unit.unitNumber}</td>
+                    <td><span class="badge badge-info">${unit.unitType}</span></td>
+                    <td>
+                        <button class="btn" style="padding: 6px 12px; font-size: 13px;" 
+                                onclick="quickBook('${unit.property}', '${unit.unitNumber}')">
+                            Book This Unit
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function quickBook(property, unitNumber) {
+            document.getElementById('property').value = property;
+            updateUnitOptions();
+            document.getElementById('unitNumber').value = unitNumber;
+            const selectedOption = document.getElementById('unitNumber').options[document.getElementById('unitNumber').selectedIndex];
+            document.getElementById('unitType').value = selectedOption?.dataset.unitType || '';
+            openAddReservationModal();
+        }
+
+        // Reservations Display
+        function getReservationStatus(reservation) {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const checkIn = new Date(reservation.checkIn);
+            const checkOut = new Date(reservation.checkOut);
+            
+            if (checkOut < today) {
+                return 'completed';
+            } else if (checkIn > today) {
+                return 'upcoming';
+            } else {
+                return 'active';
+            }
+        }
+
+        function displayReservations() {
+            const tbody = document.getElementById('reservationsBody');
+            let filtered = [...reservations];
+            
+            const searchTerm = document.getElementById('searchBox').value.toLowerCase();
+            if (searchTerm) {
+                filtered = filtered.filter(r => 
+                    r.tenantName.toLowerCase().includes(searchTerm) ||
+                    r.unitNumber.toLowerCase().includes(searchTerm) ||
+                    r.property.toLowerCase().includes(searchTerm) ||
+                    (r.tenantContact && r.tenantContact.toLowerCase().includes(searchTerm))
+                );
+            }
+            
+            const propertyFilter = document.getElementById('propertyFilter').value;
+            const statusFilter = document.getElementById('statusFilter').value;
+            const typeFilter = document.getElementById('typeFilter').value;
+            
+            if (propertyFilter) {
+                filtered = filtered.filter(r => r.property === propertyFilter);
+            }
+            if (statusFilter) {
+                filtered = filtered.filter(r => getReservationStatus(r) === statusFilter);
+            }
+            if (typeFilter) {
+                filtered = filtered.filter(r => r.rentalType === typeFilter);
+            }
+            
+            filtered.sort((a, b) => {
+                if (a.property !== b.property) {
+                    return a.property.localeCompare(b.property);
+                }
+                
+                const aNum = parseInt(a.unitNumber);
+                const bNum = parseInt(b.unitNumber);
+                
+                if (!isNaN(aNum) && !isNaN(bNum)) {
+                    return aNum - bNum;
+                }
+                
+                return a.unitNumber.localeCompare(b.unitNumber, undefined, { numeric: true, sensitivity: 'base' });
+            });
+            
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="12" class="empty-state"><div class="empty-state-icon">📋</div><div>No reservations found</div></td></tr>';
+                return;
+            }
+            
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            tbody.innerHTML = filtered.map(r => {
+                const status = getReservationStatus(r);
+                const statusBadge = status === 'active' ? 'badge-success' : 
+                                  status === 'upcoming' ? 'badge-info' : 'badge-warning';
+                
+                const totalCharges = (r.charges || []).reduce((sum, c) => sum + parseFloat(c.amount || 0), 0);
+                const totalPaid = (r.payments || []).reduce((sum, p) => sum + parseFloat(p.amount || 0), 0);
+                const balance = totalCharges - totalPaid;
+                const balanceColor = balance > 0 ? '#e53e3e' : balance < 0 ? '#38a169' : '#1a202c';
+                
+                // Check if overdue
+                const checkOut = new Date(r.checkOut);
+                const isOverdue = checkOut < today && r.completedStatus !== 'completed';
+                
+                return `
+                    <tr style="${r.completedStatus === 'completed' ? 'opacity: 0.6;' : ''}">
+                        <td>${r.property}</td>
+                        <td>${r.unitNumber}</td>
+                        <td><span class="badge badge-info">${r.unitType || 'N/A'}</span></td>
+                        <td>${r.tenantName}</td>
+                        <td><span class="badge ${r.rentalType === 'long-term' ? 'badge-info' : 'badge-warning'}">${r.rentalType}</span></td>
+                        <td>${formatDate(r.checkIn)}</td>
+                        <td>${formatDate(r.checkOut)}</td>
+                        <td>$${r.rentAmount.toFixed(2)}</td>
+                        <td style="color: ${balanceColor}; font-weight: 600;">$${balance.toFixed(2)}</td>
+                        <td>
+                            ${r.completedStatus === 'completed' ? 
+                                '<span class="badge badge-warning">Completed</span>' : 
+                                `<span class="badge ${statusBadge}">${status}</span>`
+                            }
+                        </td>
+                        <td>
+                            ${isOverdue ? 
+                                '<span class="badge badge-danger">⚠️ OVERDUE</span>' : 
+                                '<span style="color: #a0aec0;">—</span>'
+                            }
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                ${r.completedStatus !== 'completed' ? 
+                                    `<button class="action-btn" style="background: #48bb78; color: white;" onclick="markAsCompleted(${r.id})">✓ Complete</button>` :
+                                    `<button class="action-btn" style="background: #ed8936; color: white;" onclick="markAsActive(${r.id})">↺ Reactivate</button>`
+                                }
+                                <button class="action-btn" style="background: #805ad5; color: white;" onclick="openLedgerModal(${r.id})">Ledger</button>
+                                <button class="action-btn edit" onclick="openEditModal(${r.id})">Edit</button>
+                                <button class="action-btn delete" onclick="deleteReservation(${r.id})">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function filterReservations() {
+            displayReservations();
+        }
+
+        // Ledger Modal
+        function openLedgerModal(reservationId) {
+            const reservation = reservations.find(r => r.id === reservationId);
+            if (!reservation) return;
+            
+            document.getElementById('ledgerReservationId').value = reservationId;
+            document.getElementById('ledgerTenantInfo').textContent = 
+                `${reservation.tenantName} - ${reservation.property}, Unit ${reservation.unitNumber}`;
+            
+            if (!reservation.charges) reservation.charges = [];
+            if (!reservation.payments) reservation.payments = [];
+            
+            renderLedger(reservation);
+            document.getElementById('ledgerModal').classList.add('active');
+        }
+
+        function closeLedgerModal() {
+            document.getElementById('ledgerModal').classList.remove('active');
+            displayReservations();
+            updateDashboard();
+        }
+
+        function renderLedger(reservation) {
+            const chargesBody = document.getElementById('chargesTableBody');
+            if (reservation.charges.length === 0) {
+                chargesBody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: #718096;">No charges yet. Click "Add Charge" to get started.</td></tr>';
+            } else {
+                chargesBody.innerHTML = reservation.charges.map((charge, index) => `
+                    <tr>
+                        <td>
+                            <input type="text" value="${charge.description}" 
+                                   onchange="updateCharge(${reservation.id}, ${index}, 'description', this.value)"
+                                   style="width: 100%;" placeholder="e.g., January 2025 Rent">
+                        </td>
+                        <td>
+                            <input type="number" value="${charge.amount}" step="0.01" min="0"
+                                   onchange="updateCharge(${reservation.id}, ${index}, 'amount', this.value)"
+                                   style="width: 100%;" placeholder="0.00">
+                        </td>
+                        <td>
+                            <button class="action-btn delete" onclick="deleteCharge(${reservation.id}, ${index})">Delete</button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+            
+            const paymentsBody = document.getElementById('paymentsTableBody');
+            if (reservation.payments.length === 0) {
+                paymentsBody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #718096;">No payments recorded yet. Click "Add Payment" to record one.</td></tr>';
+            } else {
+                paymentsBody.innerHTML = reservation.payments.map((payment, index) => `
+                    <tr>
+                        <td>
+                            <input type="date" value="${payment.date}" 
+                                   onchange="updatePayment(${reservation.id}, ${index}, 'date', this.value)"
+                                   style="width: 100%;">
+                        </td>
+                        <td>
+                            <input type="text" value="${payment.description}" 
+                                   onchange="updatePayment(${reservation.id}, ${index}, 'description', this.value)"
+                                   style="width: 100%;" placeholder="e.g., Partial Payment">
+                        </td>
+                        <td>
+                            <input type="number" value="${payment.amount}" step="0.01" min="0"
+                                   onchange="updatePayment(${reservation.id}, ${index}, 'amount', this.value)"
+                                   style="width: 100%;" placeholder="0.00">
+                        </td>
+                        <td>
+                            <button class="action-btn delete" onclick="deletePayment(${reservation.id}, ${index})">Delete</button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+            
+            updateLedgerTotals(reservation);
+        }
+
+        function updateLedgerTotals(reservation) {
+            const totalCharges = reservation.charges.reduce((sum, c) => sum + parseFloat(c.amount || 0), 0);
+            const totalPaid = reservation.payments.reduce((sum, p) => sum + parseFloat(p.amount || 0), 0);
+            const balance = totalCharges - totalPaid;
+            
+            document.getElementById('totalCharges').textContent = `$${totalCharges.toFixed(2)}`;
+            document.getElementById('totalPaid').textContent = `$${totalPaid.toFixed(2)}`;
+            document.getElementById('balanceDue').textContent = `$${balance.toFixed(2)}`;
+            document.getElementById('balanceDue').style.color = balance > 0 ? '#e53e3e' : balance < 0 ? '#38a169' : '#1a202c';
+        }
+
+        async function addChargeLine() {
+            const reservationId = parseInt(document.getElementById('ledgerReservationId').value);
+            const reservation = reservations.find(r => r.id === reservationId);
+            
+            if (!reservation.charges) reservation.charges = [];
+            
+            reservation.charges.push({
+                description: '',
+                amount: 0
+            });
+            
+            await saveToSheets('updateLedger', {
+                reservationId,
+                charges: reservation.charges,
+                payments: reservation.payments
+            });
+            
+            renderLedger(reservation);
+        }
+
+        async function addPaymentLine() {
+            const reservationId = parseInt(document.getElementById('ledgerReservationId').value);
+            const reservation = reservations.find(r => r.id === reservationId);
+            
+            if (!reservation.payments) reservation.payments = [];
+            
+            const today = new Date().toISOString().split('T')[0];
+            reservation.payments.push({
+                date: today,
+                description: '',
+                amount: 0
+            });
+            
+            await saveToSheets('updateLedger', {
+                reservationId,
+                charges: reservation.charges,
+                payments: reservation.payments
+            });
+            
+            renderLedger(reservation);
+        }
+
+        async function updateCharge(reservationId, index, field, value) {
+            const reservation = reservations.find(r => r.id === reservationId);
+            reservation.charges[index][field] = field === 'amount' ? parseFloat(value) || 0 : value;
+            
+            await saveToSheets('updateLedger', {
+                reservationId,
+                charges: reservation.charges,
+                payments: reservation.payments
+            });
+            
+            updateLedgerTotals(reservation);
+        }
+
+        async function updatePayment(reservationId, index, field, value) {
+            const reservation = reservations.find(r => r.id === reservationId);
+            reservation.payments[index][field] = field === 'amount' ? parseFloat(value) || 0 : value;
+            
+            await saveToSheets('updateLedger', {
+                reservationId,
+                charges: reservation.charges,
+                payments: reservation.payments
+            });
+            
+            updateLedgerTotals(reservation);
+        }
+
+        async function deleteCharge(reservationId, index) {
+            if (!confirm('Delete this charge?')) return;
+            
+            const reservation = reservations.find(r => r.id === reservationId);
+            reservation.charges.splice(index, 1);
+            
+            await saveToSheets('updateLedger', {
+                reservationId,
+                charges: reservation.charges,
+                payments: reservation.payments
+            });
+            
+            renderLedger(reservation);
+        }
+
+        async function deletePayment(reservationId, index) {
+            if (!confirm('Delete this payment?')) return;
+            
+            const reservation = reservations.find(r => r.id === reservationId);
+            reservation.payments.splice(index, 1);
+            
+            await saveToSheets('updateLedger', {
+                reservationId,
+                charges: reservation.charges,
+                payments: reservation.payments
+            });
+            
+            renderLedger(reservation);
+        }
+
+        // Dashboard
+        function updateDashboard() {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const sevenDays = new Date(today);
+            sevenDays.setDate(sevenDays.getDate() + 7);
+            
+            const notifications = [];
+            const overdueTenants = [];
+            
+            reservations.forEach(r => {
+                // Skip completed reservations
+                if (r.completedStatus === 'completed') return;
+                
+                const checkOut = new Date(r.checkOut);
+                const checkIn = new Date(r.checkIn);
+                const daysUntilCheckout = Math.ceil((checkOut - today) / (1000 * 60 * 60 * 24));
+                
+                // Check for overdue (past checkout date)
+                if (checkOut < today) {
+                    overdueTenants.push({
+                        ...r,
+                        daysOverdue: Math.abs(daysUntilCheckout)
+                    });
+                }
+                
+                if (daysUntilCheckout >= 0 && daysUntilCheckout <= 7) {
+                    const urgency = daysUntilCheckout <= 1 ? 'urgent' : daysUntilCheckout <= 3 ? 'warning' : 'info';
+                    notifications.push({
+                        type: urgency,
+                        title: daysUntilCheckout === 0 ? '🚨 Check-out Today!' : `📅 Check-out in ${daysUntilCheckout} day${daysUntilCheckout !== 1 ? 's' : ''}`,
+                        text: `${r.tenantName} - ${r.property}, Unit ${r.unitNumber}`,
+                        date: checkOut
+                    });
+                }
+                
+                if (r.rentalType === 'long-term') {
+                    const status = getReservationStatus(r);
+                    if (status === 'active') {
+                        const totalCharges = (r.charges || []).reduce((sum, c) => sum + parseFloat(c.amount || 0), 0);
+                        const totalPaid = (r.payments || []).reduce((sum, p) => sum + parseFloat(p.amount || 0), 0);
+                        const balance = totalCharges - totalPaid;
+                        
+                        if (balance > 0) {
+                            notifications.push({
+                                type: 'warning',
+                                title: '💰 Outstanding Balance',
+                                text: `${r.tenantName} - ${r.property}, Unit ${r.unitNumber} - Balance: $${balance.toFixed(2)}`,
+                                date: checkIn
+                            });
+                        }
+                    }
+                }
+            });
+            
+            // Display overdue tenants
+            const overdueCard = document.getElementById('overdueCard');
+            const overdueList = document.getElementById('overdueList');
+            
+            if (overdueTenants.length > 0) {
+                overdueCard.style.display = 'block';
+                overdueList.innerHTML = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Tenant</th>
+                                <th>Property</th>
+                                <th>Unit</th>
+                                <th>Type</th>
+                                <th>Days Overdue</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${overdueTenants.map(r => `
+                                <tr>
+                                    <td><strong>${r.tenantName}</strong></td>
+                                    <td>${r.property}</td>
+                                    <td>${r.unitNumber}</td>
+                                    <td><span class="badge ${r.rentalType === 'long-term' ? 'badge-info' : 'badge-warning'}">${r.rentalType}</span></td>
+                                    <td><span class="badge badge-danger">${r.daysOverdue} days</span></td>
+                                    <td>
+                                        <button class="btn" style="padding: 6px 12px; font-size: 13px;" 
+                                                onclick="markAsCompleted(${r.id})">✓ Mark Moved Out</button>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+            } else {
+                overdueCard.style.display = 'none';
+            }
+            
+            notifications.sort((a, b) => {
+                const urgencyOrder = { urgent: 0, warning: 1, info: 2 };
+                if (urgencyOrder[a.type] !== urgencyOrder[b.type]) {
+                    return urgencyOrder[a.type] - urgencyOrder[b.type];
+                }
+                return a.date - b.date;
+            });
+            
+            const notificationArea = document.getElementById('notificationArea');
+            if (notifications.length === 0) {
+                notificationArea.innerHTML = '<div class="notification info"><div class="notification-title">✅ All Caught Up!</div><div class="notification-text">No urgent notifications at this time.</div></div>';
+            } else {
+                notificationArea.innerHTML = notifications.map(n => `
+                    <div class="notification ${n.type}">
+                        <div class="notification-title">${n.title}</div>
+                        <div class="notification-text">${n.text}</div>
+                    </div>
+                `).join('');
+            }
+            
+            const upcoming = reservations.filter(r => {
+                if (r.completedStatus === 'completed') return false;
+                const checkIn = new Date(r.checkIn);
+                const checkOut = new Date(r.checkOut);
+                return (checkIn >= today && checkIn <= sevenDays) || 
+                       (checkOut >= today && checkOut <= sevenDays);
+            }).sort((a, b) => {
+                const aDate = new Date(Math.min(new Date(a.checkIn), new Date(a.checkOut)));
+                const bDate = new Date(Math.min(new Date(b.checkIn), new Date(b.checkOut)));
+                return aDate - bDate;
+            });
+            
+            const upcomingList = document.getElementById('upcomingList');
+            if (upcoming.length === 0) {
+                upcomingList.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📅</div><div>No upcoming check-ins or check-outs in the next 7 days</div></div>';
+            } else {
+                upcomingList.innerHTML = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Type</th>
+                                <th>Property</th>
+                                <th>Unit</th>
+                                <th>Tenant</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${upcoming.map(r => {
+                                const checkIn = new Date(r.checkIn);
+                                const checkOut = new Date(r.checkOut);
+                                const isCheckin = checkIn >= today && checkIn <= sevenDays;
+                                const isCheckout = checkOut >= today && checkOut <= sevenDays;
+                                
+                                let rows = '';
+                                if (isCheckin) {
+                                    rows += `
+                                        <tr>
+                                            <td>${formatDate(r.checkIn)}</td>
+                                            <td><span class="badge badge-success">Check-in</span></td>
+                                            <td>${r.property}</td>
+                                            <td>${r.unitNumber}</td>
+                                            <td>${r.tenantName}</td>
+                                        </tr>
+                                    `;
+                                }
+                                if (isCheckout) {
+                                    rows += `
+                                        <tr>
+                                            <td>${formatDate(r.checkOut)}</td>
+                                            <td><span class="badge badge-warning">Check-out</span></td>
+                                            <td>${r.property}</td>
+                                            <td>${r.unitNumber}</td>
+                                            <td>${r.tenantName}</td>
+                                        </tr>
+                                    `;
+                                }
+                                return rows;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                `;
+            }
+        }
+
+        // Reports
+        function generateMonthReport() {
+            const month = parseInt(document.getElementById('reportMonth').value);
+            const year = parseInt(document.getElementById('reportYear').value);
+            
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            
+            const monthReservations = reservations.filter(r => {
+                const checkIn = new Date(r.checkIn);
+                const checkOut = new Date(r.checkOut);
+                return checkIn <= lastDay && checkOut >= firstDay;
+            });
+            
+            let totalRevenue = 0;
+            let paidRevenue = 0;
+            let pendingRevenue = 0;
+            const propertyBreakdown = {};
+            
+            monthReservations.forEach(r => {
+                const totalCharges = (r.charges || []).reduce((sum, c) => sum + parseFloat(c.amount || 0), 0);
+                const totalPaid = (r.payments || []).reduce((sum, p) => sum + parseFloat(p.amount || 0), 0);
+                
+                totalRevenue += totalCharges;
+                paidRevenue += totalPaid;
+                pendingRevenue += (totalCharges - totalPaid);
+                
+                if (!propertyBreakdown[r.property]) {
+                    propertyBreakdown[r.property] = { count: 0, revenue: 0, paid: 0 };
+                }
+                propertyBreakdown[r.property].count++;
+                propertyBreakdown[r.property].revenue += totalCharges;
+                propertyBreakdown[r.property].paid += totalPaid;
+            });
+            
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
+                              'July', 'August', 'September', 'October', 'November', 'December'];
+            
+            const reportContent = document.getElementById('reportContent');
+            reportContent.innerHTML = `
+                <h3 style="margin-bottom: 20px; color: #1a202c;">${monthNames[month]} ${year} Report</h3>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px;">
+                    <div style="background: #f7fafc; padding: 20px; border-radius: 8px; border-left: 4px solid #3182ce;">
+                        <div style="color: #718096; font-size: 13px; margin-bottom: 8px;">Total Reservations</div>
+                        <div style="color: #1a202c; font-size: 28px; font-weight: 600;">${monthReservations.length}</div>
+                    </div>
+                    <div style="background: #f7fafc; padding: 20px; border-radius: 8px; border-left: 4px solid #3182ce;">
+                        <div style="color: #718096; font-size: 13px; margin-bottom: 8px;">Total Revenue</div>
+                        <div style="color: #1a202c; font-size: 28px; font-weight: 600;">$${totalRevenue.toFixed(2)}</div>
+                    </div>
+                    <div style="background: #f7fafc; padding: 20px; border-radius: 8px; border-left: 4px solid #3182ce;">
+                        <div style="color: #718096; font-size: 13px; margin-bottom: 8px;">Revenue Received</div>
+                        <div style="color: #1a202c; font-size: 28px; font-weight: 600;">$${paidRevenue.toFixed(2)}</div>
+                    </div>
+                    <div style="background: #f7fafc; padding: 20px; border-radius: 8px; border-left: 4px solid #3182ce;">
+                        <div style="color: #718096; font-size: 13px; margin-bottom: 8px;">Pending Revenue</div>
+                        <div style="color: #1a202c; font-size: 28px; font-weight: 600;">$${pendingRevenue.toFixed(2)}</div>
+                    </div>
+                </div>
+                
+                <h4 style="margin-top: 24px; margin-bottom: 16px; color: #1a202c;">Revenue by Property</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Property</th>
+                            <th>Reservations</th>
+                            <th>Revenue</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${Object.entries(propertyBreakdown).map(([property, data]) => `
+                            <tr>
+                                <td>${property}</td>
+                                <td>${data.count}</td>
+                                <td>$${data.revenue.toFixed(2)}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+                
+                <h4 style="margin-top: 24px; margin-bottom: 16px; color: #1a202c;">Reservation Details</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Property</th>
+                            <th>Unit</th>
+                            <th>Tenant</th>
+                            <th>Type</th>
+                            <th>Check-in</th>
+                            <th>Check-out</th>
+                            <th>Charged</th>
+                            <th>Paid</th>
+                            <th>Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${monthReservations.map(r => {
+                            const totalCharges = (r.charges || []).reduce((sum, c) => sum + parseFloat(c.amount || 0), 0);
+                            const totalPaid = (r.payments || []).reduce((sum, p) => sum + parseFloat(p.amount || 0), 0);
+                            const balance = totalCharges - totalPaid;
+                            const balanceColor = balance > 0 ? '#e53e3e' : balance < 0 ? '#38a169' : '#1a202c';
+                            
+                            return `
+                                <tr>
+                                    <td>${r.property}</td>
+                                    <td>${r.unitNumber}</td>
+                                    <td>${r.tenantName}</td>
+                                    <td><span class="badge ${r.rentalType === 'long-term' ? 'badge-info' : 'badge-warning'}">${r.rentalType}</span></td>
+                                    <td>${formatDate(r.checkIn)}</td>
+                                    <td>${formatDate(r.checkOut)}</td>
+                                    <td>$${totalCharges.toFixed(2)}</td>
+                                    <td>$${totalPaid.toFixed(2)}</td>
+                                    <td style="color: ${balanceColor}; font-weight: 600;">$${balance.toFixed(2)}</td>
+                                </tr>
+                            `;
+                        }).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        // Stats
+        function updateStats() {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            const activeReservations = reservations.filter(r => {
+                const checkIn = new Date(r.checkIn);
+                const checkOut = new Date(r.checkOut);
+                return checkIn <= today && checkOut >= today;
+            });
+            
+            document.getElementById('activeCount').textContent = activeReservations.length;
+            document.getElementById('totalUnitsCount').textContent = units.length;
+            
+            const occupiedUnits = new Set();
+            activeReservations.forEach(r => {
+                occupiedUnits.add(`${r.property}|${r.unitNumber}`);
+            });
+            const availableUnits = units.filter(u => 
+                !occupiedUnits.has(`${u.property}|${u.unitNumber}`)
+            );
+            document.getElementById('availableCount').textContent = availableUnits.length;
+            
+            const currentMonth = today.getMonth();
+            const currentYear = today.getFullYear();
+            const firstDay = new Date(currentYear, currentMonth, 1);
+            const lastDay = new Date(currentYear, currentMonth + 1, 0);
+            
+            const monthRevenue = reservations.filter(r => {
+                const checkIn = new Date(r.checkIn);
+                const checkOut = new Date(r.checkOut);
+                return checkIn <= lastDay && checkOut >= firstDay;
+            }).reduce((sum, r) => {
+                const totalPaid = (r.payments || []).reduce((pSum, p) => pSum + parseFloat(p.amount || 0), 0);
+                return sum + totalPaid;
+            }, 0);
+            
+            document.getElementById('monthRevenue').textContent = `$${monthRevenue.toFixed(2)}`;
+        }
+
+        // Helper
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        }
+    </script>
+</body>
+</html>
